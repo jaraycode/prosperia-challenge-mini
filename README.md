@@ -1,36 +1,36 @@
-# Mini Prosperia Challenge – For Interns 🎓
+# Mini Prosperia Challenge – Para Internos 🎓
 
-Welcome to the **Mini Prosperia Challenge**! This is a simplified internship-level challenge where you'll build a receipt OCR and data extraction system.
+¡Bienvenido al **Mini Prosperia Challenge**! Este es un desafío simplificado a nivel de pasantía donde construirás un sistema de OCR y extracción de datos de recibos.
 
-**Goal:** Upload receipt images/PDFs and extract key financial information using **Tesseract OCR** and basic text parsing.
-
----
-
-## 📋 What You'll Build
-
-You'll create a mini expense tracker that:
-
-1. **Accepts image/PDF uploads** via a simple web UI
-2. **Extracts text** from images using Tesseract OCR
-3. **Parses structured data** like amounts, vendor names, and dates
-4. **Displays results** in a clean format
-
-**That's it!** No database, no AI relay, no complex integrations. Pure text extraction and parsing.
+**Objetivo:** Carga imágenes/PDFs de recibos y extrae información financiera clave usando **Tesseract OCR** y análisis de texto básico.
 
 ---
 
-## 🎯 Core Tasks (marked with `TODO:` in code)
+## 📋 Lo que Construirás
 
-### 1. **Tesseract OCR Implementation** 
+Crearás un mini gestor de gastos que:
+
+1. **Acepta cargas de imágenes/PDF** a través de una interfaz web simple
+2. **Extrae texto** de imágenes usando Tesseract OCR
+3. **Analiza datos estructurados** como montos, nombres de vendedores y fechas
+4. **Muestra resultados** en un formato limpio
+
+**¡Eso es!** Sin base de datos, sin relé de IA, sin integraciones complejas. Extracción y análisis de texto puro.
+
+---
+
+## 🎯 Tareas Principales (marcadas con `TODO:` en el código)
+
+### 1. **Implementación de Tesseract OCR** 
 📁 `src/services/ocr.service.ts` → `TesseractOcr.extractText()`
 
-Extract raw text from an image/PDF:
-- Use `Tesseract.js` library
-- Support languages: `eng+spa` (English + Spanish)
-- Handle both images and PDFs
-- Return the extracted text
+Extrae texto sin procesar de una imagen/PDF:
+- Usa la biblioteca `Tesseract.js`
+- Soporta idiomas: `eng+spa` (Inglés + Español)
+- Maneja tanto imágenes como PDFs
+- Retorna el texto extraído
 
-**Hint:**
+**Pista:**
 ```typescript
 const result = await Tesseract.recognize(imagePath, 'eng+spa');
 return result.data.text;
@@ -38,39 +38,39 @@ return result.data.text;
 
 ---
 
-### 2. **Receipt Data Parser**
+### 2. **Analizador de Datos de Recibos**
 📁 `src/services/parser.service.ts` → `ReceiptParser.parse()`
 
-Extract structured data from raw OCR text:
+Extrae datos estructurados del texto sin procesar del OCR:
 
 ```typescript
 interface ReceiptData {
-  rawText: string;              // Original extracted text
-  amount?: number;              // Total amount (required)
-  subtotalAmount?: number;      // Subtotal before tax
-  taxAmount?: number;           // Tax amount
-  taxPercentage?: number;       // Tax percentage (e.g., 10, 16)
-  vendorName?: string;          // Store/vendor name
-  invoiceNumber?: string;       // Invoice or receipt number
-  date?: string;                // Date (any format is fine)
+  rawText: string;              // Texto original extraído
+  amount?: number;              // Monto total (requerido)
+  subtotalAmount?: number;      // Subtotal antes del impuesto
+  taxAmount?: number;           // Monto del impuesto
+  taxPercentage?: number;       // Porcentaje de impuesto (ej: 10, 16)
+  vendorName?: string;          // Nombre de la tienda/vendedor
+  invoiceNumber?: string;       // Número de factura o recibo
+  date?: string;                // Fecha (cualquier formato está bien)
 }
 ```
 
-**Techniques you can use:**
-- **Regular expressions** to find patterns:
-  - `total.*?\$?([\d,]+\.?\d*)/i` → Match amounts
-  - `invoice\s*#?\s*(\w+)/i` → Match invoice numbers
-  - `\d{1,2}[/-]\d{1,2}[/-]\d{2,4}` → Match dates
+**Técnicas que puedes usar:**
+- **Expresiones regulares** para encontrar patrones:
+  - `total.*?\$?([\d,]+\.?\d*)/i` → Coincide con montos
+  - `invoice\s*#?\s*(\w+)/i` → Coincide con números de factura
+  - `\d{1,2}[/-]\d{1,2}[/-]\d{2,4}` → Coincide con fechas
   
-- **Keyword matching:**
-  - Look for "TOTAL", "SUBTOTAL", "TAX", "INVOICE", "VENDOR"
+- **Coincidencia de palabras clave:**
+  - Busca "TOTAL", "SUBTOTAL", "TAX", "IMPUESTO", "FACTURA"
   
-- **Heuristics:**
-  - Largest amount = total
-  - Vendor name usually at the top
-  - Multiple numbers with currency = amounts
+- **Heurística:**
+  - El monto más grande = total
+  - El nombre del vendedor generalmente está al principio
+  - Múltiples números con símbolo de moneda = montos
 
-**Example approach:**
+**Ejemplo de enfoque:**
 ```typescript
 const totalMatch = rawText.match(/total.*?\$?([\d,]+\.?\d*)/i);
 if (totalMatch) {
@@ -80,28 +80,28 @@ if (totalMatch) {
 
 ---
 
-### 3. **Receipt Upload Endpoint**
+### 3. **Endpoint de Carga de Recibos**
 📁 `src/routes/receipts.routes.ts` → `POST /api/receipts`
 
-Implement the file upload handler:
+Implementa el manejador de carga de archivos:
 
-1. ✅ Validate that a file was uploaded
-2. ✅ Check file type (only images/PDFs allowed)
-3. 🔧 **TODO:** Extract text using OCR provider
-4. 🔧 **TODO:** Parse the extracted text
-5. 🔧 **TODO:** Store result with unique ID
-6. ✅ Return the parsed data as JSON
+1. ✅ Valida que se cargó un archivo
+2. ✅ Verifica el tipo de archivo (solo imágenes/PDFs permitidos)
+3. 🔧 **TODO:** Extrae texto usando el proveedor OCR
+4. 🔧 **TODO:** Analiza el texto extraído
+5. 🔧 **TODO:** Almacena el resultado con ID único
+6. ✅ Retorna los datos analizados como JSON
 
-**Response format:**
+**Formato de respuesta:**
 ```json
 {
-  "id": "uuid-here",
-  "filename": "receipt.jpg",
+  "id": "uuid-aqui",
+  "filename": "recibo.jpg",
   "uploadedAt": "2024-01-15T10:30:00Z",
   "data": {
     "rawText": "...",
     "amount": 88.00,
-    "vendorName": "Supermarket ABC",
+    "vendorName": "Supermercado ABC",
     ...
   }
 }
@@ -109,203 +109,203 @@ Implement the file upload handler:
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Inicio Rápido
 
-### Prerequisites
+### Prerrequisitos
 - Node.js 18+ 
-- npm or yarn
+- npm o yarn
 
-### Installation
+### Instalación
 
 ```bash
-# Clone or navigate to the project
+# Clona o navega al proyecto
 cd prosperia-challenge-mini
 
-# Install dependencies
+# Instala las dependencias
 npm install
 
-# Copy environment file
+# Copia el archivo de ambiente
 cp .env.example .env
 
-# Start development server
+# Inicia el servidor de desarrollo
 npm run dev
 ```
 
-The server will start at `http://localhost:3000`
+El servidor se iniciará en `http://localhost:3000`
 
-### Testing the API
+### Probando la API
 
-**1. Via Web UI:**
-- Open `http://localhost:3000` in your browser
-- Upload a receipt image/PDF
-- See the extracted data displayed
+**1. Vía Interfaz Web:**
+- Abre `http://localhost:3000` en tu navegador
+- Carga una imagen/PDF de recibo
+- Ve los datos extraídos mostrados
 
-**2. Via cURL:**
+**2. Vía cURL:**
 ```bash
 curl -X POST http://localhost:3000/api/receipts \
-  -F "file=@receipt.jpg"
+  -F "file=@recibo.jpg"
 ```
 
-**3. Via Postman:**
-- POST to `http://localhost:3000/api/receipts`
-- Body: form-data with key `file` and your image
+**3. Vía Postman:**
+- POST a `http://localhost:3000/api/receipts`
+- Body: form-data con clave `file` y tu imagen
 
 ---
 
-## 📁 Project Structure
+## 📁 Estructura del Proyecto
 
 ```
 src/
   ├── config/
-  │   ├── env.ts              # Environment variables
-  │   └── logger.ts           # Logging setup
+  │   ├── env.ts              # Variables de ambiente
+  │   └── logger.ts           # Configuración de logging
   ├── services/
   │   ├── ocr.service.ts      # Tesseract OCR (TODO)
-  │   └── parser.service.ts   # Data extraction (TODO)
+  │   └── parser.service.ts   # Extracción de datos (TODO)
   ├── routes/
-  │   ├── receipts.routes.ts  # Upload endpoint (TODO)
-  │   └── health.routes.ts    # Health check
+  │   ├── receipts.routes.ts  # Endpoint de carga (TODO)
+  │   └── health.routes.ts    # Verificación de salud
   ├── types/
-  │   └── receipt.ts          # TypeScript interfaces
+  │   └── receipt.ts          # Interfaces TypeScript
   ├── utils/
-  │   └── errors.ts           # Error handling
-  ├── app.ts                  # Express setup
-  └── server.ts               # Server entry point
+  │   └── errors.ts           # Manejo de errores
+  ├── app.ts                  # Configuración de Express
+  └── server.ts               # Punto de entrada
 
 public/
-  └── index.html              # Web UI
+  └── index.html              # Interfaz web
 
-.env.example                  # Environment template
+.env.example                  # Plantilla de ambiente
 ```
 
 ---
 
-## 🔧 Available Providers
+## 🔧 Proveedores Disponibles
 
-### OCR Provider
-- **`tesseract`** (default) → Use real Tesseract OCR
-- **`mock`** → Use fake OCR for testing (returns sample text)
+### Proveedor OCR
+- **`tesseract`** (default) → Usa Tesseract OCR real
+- **`mock`** → Usa OCR falso para pruebas (retorna texto de muestra)
 
-Set via `.env`:
+Establécelo vía `.env`:
 ```
 OCR_PROVIDER=tesseract
 ```
 
 ---
 
-## ✅ Evaluation Criteria
+## ✅ Criterios de Evaluación
 
-Your implementation will be tested on:
+Tu implementación será evaluada en:
 
-1. **Accuracy** of extracted fields:
-   - Can it find the total amount?
-   - Does it identify the vendor?
-   - Can it parse dates and invoice numbers?
+1. **Precisión** de los campos extraídos:
+   - ¿Puede encontrar el monto total?
+   - ¿Identifica el vendedor?
+   - ¿Puede analizar fechas y números de factura?
 
-2. **Code Quality:**
-   - TypeScript types properly defined
-   - Error handling implemented
-   - Comments explaining complex logic
-   - Logs for debugging
+2. **Calidad del Código:**
+   - Tipos de TypeScript correctamente definidos
+   - Manejo de errores implementado
+   - Comentarios explicando lógica compleja
+   - Logs para depuración
 
-3. **Functionality:**
-   - File upload works
-   - OCR processes images correctly
-   - Parser extracts data reliably
-   - API returns proper JSON responses
+3. **Funcionalidad:**
+   - La carga de archivos funciona
+   - El OCR procesa imágenes correctamente
+   - El analizador extrae datos confiablemente
+   - La API retorna respuestas JSON apropiadas
 
-4. **Robustness:**
-   - Handles various receipt formats
-   - Graceful error handling
-   - Works with different languages (eng + spa)
-
----
-
-## 🧪 Test Cases
-
-We'll test your implementation with:
-
-- Simple receipts (clear text, standard format)
-- Complex receipts (multiple items, tax variations)
-- Different languages (English, Spanish)
-- Various file types (PNG, JPG, PDF)
-- Edge cases (missing fields, unusual formats)
-
-**Example receipt:** See `public/index.html` for sample extraction fields.
+4. **Robustez:**
+   - Maneja varios formatos de recibos
+   - Manejo elegante de errores
+   - Funciona con diferentes idiomas (eng + spa)
 
 ---
 
-## 💡 Tips & Tricks
+## 🧪 Casos de Prueba
 
-1. **Start with the mock OCR** to test the parser logic first
-2. **Use regex to debug:** Test your patterns in online regex tools
-3. **Log everything** during parsing to see what's being matched
-4. **Handle edge cases:** What if an amount has commas? Different currency symbols?
-5. **Test locally** with real receipt images from your drawer
-6. **Don't overcomplicate:** Basic regex + heuristics usually work best
+Probaremos tu implementación con:
 
----
+- Recibos simples (texto claro, formato estándar)
+- Recibos complejos (múltiples artículos, variaciones de impuestos)
+- Diferentes idiomas (Inglés, Español)
+- Varios tipos de archivo (PNG, JPG, PDF)
+- Casos límite (campos faltantes, formatos inusuales)
 
-## 🚀 Bonus Features (Optional)
-
-If you finish early, consider:
-
-- ✨ Support for more fields (payment method, cashier name, etc.)
-- ✨ Multi-receipt processing
-- ✨ Download results as CSV/JSON
-- ✨ Receipt history persistence (localStorage in UI)
-- ✨ Better error messages
-- ✨ Unit tests for the parser
+**Recibo de ejemplo:** Ver `public/index.html` para campos de extracción de muestra.
 
 ---
 
-## 📚 Resources
+## 💡 Consejos y Trucos
 
-- [Tesseract.js Docs](https://github.com/naptha/tesseract.js)
-- [RegExp Tester](https://regexr.com/)
-- [Express.js Guide](https://expressjs.com/)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-
----
-
-## 🎓 Learning Outcomes
-
-By completing this challenge, you'll learn:
-
-- File upload handling in Node.js
-- OCR technology with Tesseract
-- Text parsing with regular expressions
-- REST API design
-- TypeScript for type safety
-- Error handling and logging
+1. **Comienza con el OCR simulado** para probar primero la lógica del analizador
+2. **Usa regex para depurar:** Prueba tus patrones en herramientas de regex en línea
+3. **Registra todo** durante el análisis para ver qué se está coincidiendo
+4. **Maneja casos límite:** ¿Qué pasa si un monto tiene comas? ¿Símbolos de moneda diferentes?
+5. **Prueba localmente** con recibos reales de tiendas
+6. **No compliques:** Las regex básicas + heurística generalmente funcionan mejor
 
 ---
 
-## ❓ FAQ
+## 🚀 Características Bonus (Opcionales)
 
-**Q: Can I use AI/OpenAI?**  
-A: Not for this challenge. This is about core parsing skills!
+Si terminas temprano, considera:
 
-**Q: Can I use a database?**  
-A: Not required. In-memory storage is fine.
-
-**Q: What if I can't extract all fields?**  
-A: That's okay! Extract what you can. Partial data is better than errors.
-
-**Q: How do I handle PDFs?**  
-A: Tesseract.js can handle PDFs natively. Just pass the file path.
-
-**Q: Can I modify the UI?**  
-A: Absolutely! Make it better if you want.
+- ✨ Soporte para más campos (método de pago, nombre del cajero, etc.)
+- ✨ Procesamiento de múltiples recibos
+- ✨ Descargar resultados como CSV/JSON
+- ✨ Historial de recibos persistente (localStorage en UI)
+- ✨ Mejores mensajes de error
+- ✨ Pruebas unitarias para el analizador
 
 ---
 
-## 🎉 Good Luck!
+## 📚 Recursos
 
-You've got this! Start with the `TODO:` comments and work your way through. If you get stuck, check the hints and don't hesitate to experiment.
-
-**Happy coding!** 🚀
+- [Documentación de Tesseract.js](https://github.com/naptha/tesseract.js)
+- [Probador de RegExp](https://regexr.com/)
+- [Guía de Express.js](https://expressjs.com/)
+- [Manual de TypeScript](https://www.typescriptlang.org/docs/)
 
 ---
 
-**Questions?** Check the code comments and error logs. They're your friends!
+## 🎓 Resultados de Aprendizaje
+
+Al completar este desafío, aprenderás:
+
+- Manejo de carga de archivos en Node.js
+- Tecnología OCR con Tesseract
+- Análisis de texto con expresiones regulares
+- Diseño de API REST
+- TypeScript para seguridad de tipos
+- Manejo de errores y logging
+
+---
+
+## ❓ Preguntas Frecuentes
+
+**P: ¿Puedo usar IA/OpenAI?**  
+R: No para este desafío. ¡Esto es sobre habilidades de análisis central!
+
+**P: ¿Puedo usar una base de datos?**  
+R: No requerido. El almacenamiento en memoria está bien.
+
+**P: ¿Qué si no puedo extraer todos los campos?**  
+R: ¡Eso está bien! Extrae lo que puedas. Los datos parciales son mejores que los errores.
+
+**P: ¿Cómo manejo PDFs?**  
+R: Tesseract.js puede manejar PDFs nativamente. Solo pasa la ruta del archivo.
+
+**P: ¿Puedo modificar la interfaz?**  
+R: ¡Absolutamente! Mejórala si quieres.
+
+---
+
+## 🎉 ¡Buena Suerte!
+
+¡Puedes hacerlo! Comienza con los comentarios `TODO:` y trabaja en tu camino. Si te atascas, verifica los consejos y no dudes en experimentar.
+
+**¡Feliz codificación!** 🚀
+
+---
+
+**¿Preguntas?** Verifica los comentarios del código y los registros de errores. ¡Son tus amigos!
