@@ -6,10 +6,6 @@ dist/
 *.log
 uploads/
 .DS_Store
-*.pdf
-*.png
-*.jpg
-*.jpeg
 .vscode/
 .idea/
 *.swp

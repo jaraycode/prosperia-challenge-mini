@@ -6,7 +6,7 @@ Esta carpeta contiene muestras de recibos reales que puedes usar para probar tu 
 
 - **`panama-receipt.png`** - Recibo de Panamá en formato PNG. Contiene estructura estándar de recibo con montos, impuestos y datos del vendedor.
 
-- **`Ingreso-Derma.jpg`** - Comprobante de ingreso en formato JPG. Recibo de servicio con detalles de ingresos.
+- **`Ingreso-Derma.jpg`** - Recibo en formato JPG. Recibo de servicio con detalles de ingresos.
 
 - **`PDF-TEST.pdf`** - Documento PDF para probar la extracción de texto desde archivos PDF.
 
