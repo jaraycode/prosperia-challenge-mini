@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import multer from 'multer';
 import fs from 'fs/promises';
 import path from 'path';
-import { v4 as uuidv4 } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 import { logger } from '../config/logger.js';
 import { config } from '../config/env.js';
 import { getOcrProvider } from '../services/ocr.service.js';
@@ -28,36 +28,38 @@ const upload = multer({
 
 // In-memory storage (for simplicity)
 const receipts = new Map<string, ReceiptResult>();
+const ocrProvider = getOcrProvider('tesseract');
+const parser = new ReceiptParser();
 
-/**
- * POST /api/receipts
- * Upload a receipt image/PDF and extract information
- * TODO: Implement the endpoint
- * 1. Validate file upload
- * 2. Extract text using OCR
- * 3. Parse the extracted text
- * 4. Store the result
- * 5. Return the parsed data
- */
 router.post('/api/receipts', upload.single('file'), async (req: Request, res: Response) => {
   try {
     if (!req.file) {
       throw new AppError(400, 'No file uploaded');
     }
 
-    // TODO: Implement the receipt upload logic
-    // Steps:
-    // 1. Generate a unique ID for the receipt
-    // 2. Get OCR provider
-    // 3. Extract text from the uploaded file
-    // 4. Parse the text to extract receipt data
-    // 5. Store in the receipts map
-    // 6. Return the result
+    const receiptId = uuidv4();
+    const filePath = req.file.path;
+
+    const rawText = await ocrProvider.extractText(filePath);
+
+    const parsedData = parser.parse(rawText);
+
+    const receiptResponse = {
+      id: receiptId,
+      filename: req.file.originalname,
+      uploadedAt: new Date().toISOString(),
+      data: parsedData,
+    };
+
+    receipts.set(receiptId, receiptResponse);
+
+    res.status(201).json(receiptResponse);
 
     res.status(501).json({ error: 'TODO: Implement receipt upload endpoint' });
   } catch (error) {
     logger.error(`[Receipt] Error uploading receipt: ${error}`);
-    const appError = error instanceof AppError ? error : new AppError(500, 'Failed to process receipt');
+    const appError =
+      error instanceof AppError ? error : new AppError(500, 'Failed to process receipt');
     res.status(appError.statusCode).json({ error: appError.message });
   }
 });
@@ -78,7 +80,8 @@ router.get('/api/receipts/:id', (req: Request, res: Response) => {
     res.json(receipt);
   } catch (error) {
     logger.error(`[Receipt] Error fetching receipt: ${error}`);
-    const appError = error instanceof AppError ? error : new AppError(500, 'Failed to fetch receipt');
+    const appError =
+      error instanceof AppError ? error : new AppError(500, 'Failed to fetch receipt');
     res.status(appError.statusCode).json({ error: appError.message });
   }
 });
